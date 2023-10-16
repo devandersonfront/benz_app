@@ -10,6 +10,7 @@ export function useLogout() {
   return () => {
     setAuthTokenAtom("");
     localStorage?.removeItem(authEnum.authToken);
+    console.log("새로고침하니까 이걸 안하는 이유");
     navigate("/");
   };
 }

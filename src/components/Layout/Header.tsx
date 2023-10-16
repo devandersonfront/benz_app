@@ -73,11 +73,11 @@ const Container = styled.div`
     & svg {
       width: 100%;
 
-      &:nth-child(1) {
+      &:nth-of-type(1) {
         width: 10rem;
       }
 
-      &:nth-child(2) {
+      &:nth-of-type(2) {
         width: 20rem;
         align-self: flex-end;
       }

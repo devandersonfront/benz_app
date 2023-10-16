@@ -1,57 +1,20 @@
 import styled from "@emotion/styled";
 import { colors, deviceSize } from "style/theme";
 import { useEffect, useRef, useState } from "react";
-import { useSetRecoilState } from "recoil";
-import { authTokenAtom } from "recoil/authAtom";
-import { API, authEnum } from "config/auth";
 import errorBoundary from "utils/errorBoundary";
-import axios from "instance/axios";
-import { useNavigate } from "react-router-dom";
-import { useQuery } from "react-query";
 import { css } from "@emotion/react";
 import { icons } from "modules/icons";
-
-interface AuthTokenResponse {
-  token: string;
-}
-
-interface CenterlistResponse {
-  centerlist: string[];
-}
+import useFindCenterlist from "./hook/useFindCenterlist";
+import useGetAuthToken from "./hook/useGetAuthToken";
 
 function Auth() {
-  const setRecoilAuthToken = useSetRecoilState(authTokenAtom);
-  const navigate = useNavigate();
   const [centerName, setCenterName] = useState("");
   const [isLoginStep, setIsLoginStep] = useState(false);
   const firstInputRef = useRef<HTMLInputElement | null>(null);
   const formData = useRef<Map<string, any>>(new Map());
 
-  const {
-    isLoading: isCenterLoading,
-    error: isCenterError,
-    data: centerData,
-  } = useQuery({
-    queryKey: ["centerlist"],
-    queryFn: () => axios.get<CenterlistResponse>(API.centerlist),
-    staleTime: 30 * 60 * 1000, //30m
-    cacheTime: 24 * 60 * 60 * 1000, //1d
-  });
-
-  const { isLoading: isLoginLoading, refetch: loginRefetch } = useQuery({
-    queryKey: ["authToken"],
-    queryFn: () => axios.get<AuthTokenResponse>(API.auth),
-    staleTime: 0,
-    cacheTime: 0,
-    enabled: false,
-    onSuccess(data) {
-      const authToken = data.data?.token;
-      setRecoilAuthToken(authToken);
-      localStorage.setItem(authEnum.authToken, authToken);
-      navigate("/qr");
-    },
-    onError() {},
-  });
+  const { isCenterLoading, isCenterError, centerData } = useFindCenterlist();
+  const { isLoginLoading, loginRefetch } = useGetAuthToken();
 
   const onSignIn = async () => {
     const emailValue = formData.current.get("id");
@@ -316,6 +279,7 @@ const Input = styled.input`
 `;
 
 const LoginBtn = styled(DarkBtn)`
+  width: 15rem;
   font-size: 2.2rem;
   padding: 2.2rem;
   background-color: black;

@@ -1,11 +1,15 @@
 import styled from "@emotion/styled";
-import React from "react";
+import React, { useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import { footerInfoAtom } from "recoil/layoutAtom";
 import { colors } from "style/theme";
 
 function Index() {
   const footerInfo = useRecoilValue(footerInfoAtom);
+
+  useEffect(() => {
+    console.log("footer inof", footerInfo);
+  });
 
   return (
     <Footer>
